@@ -7,23 +7,72 @@
         xmlns:local="clr-namespace:ProjektGit"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="CustomButton">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Height" Value="35" />
+            <Setter Property="Width" Value="35" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="0" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <InkCanvas x:Name="inkCanvas" Background="White" EditingMode="Ink"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#ABD4DA">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="20,5,0,5">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <Button Click="SaveButton_Click" Margin="0,5,0,0" Style="{StaticResource CustomButton}">
+                        <Button.Content>
+                            <Image Source="Images/iconSave.png" Width="20" Height="20" />
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="selectBtn" Click="EraseButton_Click" Margin="10,5,0,0" Style="{StaticResource CustomButton}" >
+                        <Button.Content>
+                            <Image Source="Images/iconSelect.png" Width="20" Height="20" />
+                        </Button.Content>
+                    </Button>
+                    <Button Click="ClearButton_Click"  Style="{StaticResource CustomButton}" Margin="10,5,0,0">
+                        <Button.Content>
+                            <Image Source="Images/iconClear.png" Width="20" Height="20" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="35,5,0,5">
+                    <Border CornerRadius="7" Background="Black" Padding="10,0,10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Images/iconWeigth.png"  Width="25" Height="25" Margin="0,0,5,0"/>
+                            <Slider x:Name="thicknessSlider" Width="100" Height="20" Minimum="1" Maximum="20" Value="4" ValueChanged="ThicknessSlider_ValueChanged"/>
+                        </StackPanel>
+                    </Border>
+                    <Border CornerRadius="7" Background="Black" Margin="10,0,0,0" Padding="10,0,10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="Images/iconColor.png"  Width="25" Height="25" Margin="0,0,5,0"/>
+                            <xctk:ColorPicker x:Name="colorPicker" Width="100" Height="20" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        <InkCanvas Grid.Row="1" x:Name="inkCanvas" Background="White" EditingMode="Ink"
                    PreviewMouseUp="InkCanvas_PreviewMouseUp">
             <InkCanvas.DefaultDrawingAttributes>
-                <DrawingAttributes x:Name="inkAttributes"
-                                   Color="Black"
-                                   Width="4"
-                                   Height="4" />
+                <DrawingAttributes x:Name="inkAttributes" Color="Black" Width="4" Height="4" />
             </InkCanvas.DefaultDrawingAttributes>
-        </InkCanvas>
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Vertical" Margin="10">
-            <Button Content="Clear" Click="ClearButton_Click" />
-            <xctk:ColorPicker x:Name="colorPicker" Width="100" Height="20" SelectedColorChanged="ColorPicker_SelectedColorChanged" Margin="0,5,0,0"/>
-            <Slider x:Name="thicknessSlider" Width="100" Height="20" Margin="0,5,0,0" Minimum="1" Maximum="20" Value="4" ValueChanged="ThicknessSlider_ValueChanged"/>
-            <Button x:Name="selectBtn" Content="Select" Click="EraseButton_Click" Margin="0,5,0,0"/>
-            <Button Content="Save" Click="SaveButton_Click" Margin="0,5,0,0"/>
-        </StackPanel>
+        </InkCanvas>        
     </Grid>
     
 </Window>
