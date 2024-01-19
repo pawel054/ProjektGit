@@ -1,137 +1,96 @@
 ﻿using Microsoft.Win32;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Ink;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProjektGit
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private List<string> playlistItems = new List<string>();
-        private int currentTrackIndex = 0;
-        private bool isPlaying = false;
+        private bool eraseMode = false;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void PlayPauseButtonClick(object sender, RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            if (playlistItems.Count > 0)
-            {
-                if (isPlaying)
-                {
-                    mediaElement.Pause();
-                }
-                else
-                {
-                    if (mediaElement.Source == null || mediaElement.Position == mediaElement.NaturalDuration.TimeSpan)
-                    {
-                        PlayCurrentTrack();
-                    }
-                    else
-                    {
-                        mediaElement.Play();
-                    }
-                }
+            inkCanvas.Strokes.Clear();
+        }
 
-                isPlaying = !isPlaying;
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            if (inkCanvas != null && colorPicker.SelectedColor.HasValue)
+            {
+                Color selectedColor = colorPicker.SelectedColor.Value;
+                inkCanvas.DefaultDrawingAttributes.Color = selectedColor;
             }
         }
 
-        private void NextButtonClick(object sender, RoutedEventArgs e)
+        private void ThicknessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (currentTrackIndex < playlistItems.Count - 1)
+            if (inkCanvas != null && thicknessSlider != null)
             {
-                currentTrackIndex++;
-                PlayCurrentTrack();
+                inkCanvas.DefaultDrawingAttributes.Width = thicknessSlider.Value;
+                inkCanvas.DefaultDrawingAttributes.Height = thicknessSlider.Value;
             }
         }
 
-        private void PreviousButtonClick(object sender, RoutedEventArgs e)
+        private void EraseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (currentTrackIndex > 0)
+            eraseMode = !eraseMode;
+
+            if (eraseMode)
             {
-                currentTrackIndex--;
-                PlayCurrentTrack();
+                // Zmień kolor przycisku na czerwony w trybie Erase
+                selectBtn.Background = new SolidColorBrush(Colors.LightBlue);
+            }
+            else
+            {
+                // Zmień kolor przycisku na zielony w trybie Ink
+                selectBtn.Background = new SolidColorBrush(Colors.LightGray);
+            }
+
+            inkCanvas.EditingMode = eraseMode ? InkCanvasEditingMode.Select : InkCanvasEditingMode.Ink;
+        }
+
+        private void InkCanvas_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (eraseMode)
+            {
+                inkCanvas.EditingMode = InkCanvasEditingMode.Select;
+            }
+            else
+            {
+                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
             }
         }
 
-        private void PlayCurrentTrack()
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            mediaElement.Source = new Uri(playlistItems[currentTrackIndex]);
-            mediaElement.LoadedBehavior = MediaState.Manual;
-            mediaElement.Play();
-            isPlaying = true;
-        }
-
-        private void MediaElement_MediaOpened(object sender, RoutedEventArgs e)
-        {
-            CompositionTarget.Rendering += UpdateTimeDisplay;
-            progressSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalSeconds;
-        }
-
-        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            CompositionTarget.Rendering -= UpdateTimeDisplay;
-            progressSlider.Value = 0;
-            NextButtonClick(null, null);
-        }
-
-        private void AddToPlaylist(string filePath)
-        {
-            playlistItems.Add(filePath);
-            playlist.Items.Add(System.IO.Path.GetFileName(filePath));
-        }
-
-        private void ProgressSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            mediaElement.Position = TimeSpan.FromSeconds(e.NewValue);
-        }
-
-        private void RewindButtonClick(object sender, RoutedEventArgs e)
-        {
-            mediaElement.Position = mediaElement.Position.Subtract(TimeSpan.FromSeconds(10));
-            UpdateTimeDisplay(null, null);
-        }
-
-        private void FastForwardButtonClick(object sender, RoutedEventArgs e)
-        {
-            mediaElement.Position = mediaElement.Position.Add(TimeSpan.FromSeconds(10));
-            UpdateTimeDisplay(null, null);
-        }
-
-        private void UpdateTimeDisplay(object sender, EventArgs e)
-        {
-            progressSlider.Value = mediaElement.Position.TotalSeconds;
-        }
-
-
-        private void OpenFileButtonClick(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|All files (*.*)|*.*";
-            openFileDialog.Multiselect = true;
-
-            if (openFileDialog.ShowDialog() == true)
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Pliki obrazów|*.png;*.bmp;*.jpg|Wszystkie pliki|*.*";
+            if (saveFileDialog.ShowDialog() == true)
             {
-                foreach (string selectedFileName in openFileDialog.FileNames)
-                {
-                    AddToPlaylist(selectedFileName);
-                }
+                SaveAsImage(saveFileDialog.FileName);
             }
         }
 
+        private void SaveAsImage(string fileName)
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96d, 96d, PixelFormats.Default);
+            rtb.Render(inkCanvas);
+
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            using (var fs = new System.IO.FileStream(fileName, System.IO.FileMode.Create))
+            {
+                encoder.Save(fs);
+            }
+        }
     }
 }

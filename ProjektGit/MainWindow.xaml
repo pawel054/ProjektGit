@@ -3,26 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:ProjektGit"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
-        <MediaElement x:Name="mediaElement" MediaOpened="MediaElement_MediaOpened" MediaEnded="MediaElement_MediaEnded" />
-        <ListBox x:Name="playlist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="200" Margin="10">
-            <!-- Items will be added programmatically -->
-        </ListBox>
-        <Button Content="Play/Pause" Click="PlayPauseButtonClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" />
-        <Button Content="Next" Click="NextButtonClick" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10,0,0,0" />
-        <Button Content="Previous" Click="PreviousButtonClick" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,0,0,0" />
-        <Button Content="add" Click="OpenFileButtonClick" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,0,220,0" />
-        <Slider x:Name="progressSlider" ValueChanged="ProgressSlider_ValueChanged" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="330,284,0,0" />
-        <Grid>
-            <!-- Poprzednie kontrolki pozostają bez zmian -->
-            <Button Content="Przesuń w przód" Click="FastForwardButtonClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,85" />
-            <Button Content="Przesuń w tył" Click="RewindButtonClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="138,0,0,85" RenderTransformOrigin="0.414,-0.728" />
-        </Grid>
-
+        <InkCanvas x:Name="inkCanvas" Background="White" EditingMode="Ink"
+                   PreviewMouseUp="InkCanvas_PreviewMouseUp">
+            <InkCanvas.DefaultDrawingAttributes>
+                <DrawingAttributes x:Name="inkAttributes"
+                                   Color="Black"
+                                   Width="4"
+                                   Height="4" />
+            </InkCanvas.DefaultDrawingAttributes>
+        </InkCanvas>
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Vertical" Margin="10">
+            <Button Content="Clear" Click="ClearButton_Click" />
+            <xctk:ColorPicker x:Name="colorPicker" Width="100" Height="20" SelectedColorChanged="ColorPicker_SelectedColorChanged" Margin="0,5,0,0"/>
+            <Slider x:Name="thicknessSlider" Width="100" Height="20" Margin="0,5,0,0" Minimum="1" Maximum="20" Value="4" ValueChanged="ThicknessSlider_ValueChanged"/>
+            <Button x:Name="selectBtn" Content="Select" Click="EraseButton_Click" Margin="0,5,0,0"/>
+            <Button Content="Save" Click="SaveButton_Click" Margin="0,5,0,0"/>
+        </StackPanel>
     </Grid>
     
 </Window>
