@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -10,6 +11,7 @@ namespace ProjektGit
     public partial class MainWindow : Window
     {
         private bool eraseMode = false;
+        private bool selectMode = false;
 
         public MainWindow()
         {
@@ -39,27 +41,44 @@ namespace ProjektGit
             }
         }
 
-        private void EraseButton_Click(object sender, RoutedEventArgs e)
+        private void SelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            selectMode = !selectMode;
+
+            if (selectMode)
+            {
+                // Zmień kolor przycisku na czerwony w trybie Erase
+                selectBtn.Background = new SolidColorBrush(Colors.Gray);
+            }
+            else
+            {
+                // Zmień kolor przycisku na zielony w trybie Ink
+                selectBtn.Background = new SolidColorBrush(Colors.Black);
+            }
+
+            inkCanvas.EditingMode = selectMode ? InkCanvasEditingMode.Select : InkCanvasEditingMode.Ink;
+        }
+
+        private void EraseButton_Click(Object sender, RoutedEventArgs e)
         {
             eraseMode = !eraseMode;
 
             if (eraseMode)
             {
-                // Zmień kolor przycisku na czerwony w trybie Erase
-                selectBtn.Background = new SolidColorBrush(Colors.LightBlue);
+                inkCanvas.DefaultDrawingAttributes.Color = ((SolidColorBrush)inkCanvas.Background).Color;
+
+                eraseBtn.Background = new SolidColorBrush(Colors.Gray);
             }
             else
             {
-                // Zmień kolor przycisku na zielony w trybie Ink
-                selectBtn.Background = new SolidColorBrush(Colors.LightGray);
+                inkCanvas.DefaultDrawingAttributes.Color = colorPicker.SelectedColor ?? Colors.Black;
+                eraseBtn.Background = new SolidColorBrush(Colors.Black);
             }
-
-            inkCanvas.EditingMode = eraseMode ? InkCanvasEditingMode.Select : InkCanvasEditingMode.Ink;
         }
 
         private void InkCanvas_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (eraseMode)
+            if (selectMode)
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Select;
             }

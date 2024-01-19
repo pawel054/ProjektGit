@@ -40,9 +40,14 @@
                             <Image Source="Images/iconSave.png" Width="20" Height="20" />
                         </Button.Content>
                     </Button>
-                    <Button x:Name="selectBtn" Click="EraseButton_Click" Margin="10,5,0,0" Style="{StaticResource CustomButton}" >
+                    <Button x:Name="selectBtn" Click="SelectButton_Click" Margin="10,5,0,0" Style="{StaticResource CustomButton}" >
                         <Button.Content>
                             <Image Source="Images/iconSelect.png" Width="20" Height="20" />
+                        </Button.Content>
+                    </Button>
+                    <Button x:Name="eraseBtn" Click="EraseButton_Click"  Style="{StaticResource CustomButton}" Margin="10,5,0,0">
+                        <Button.Content>
+                            <Image Source="Images/iconErase.png" Width="20" Height="20" />
                         </Button.Content>
                     </Button>
                     <Button Click="ClearButton_Click"  Style="{StaticResource CustomButton}" Margin="10,5,0,0">
@@ -61,7 +66,7 @@
                     <Border CornerRadius="7" Background="Black" Margin="10,0,0,0" Padding="10,0,10,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <Image Source="Images/iconColor.png"  Width="25" Height="25" Margin="0,0,5,0"/>
-                            <xctk:ColorPicker x:Name="colorPicker" Width="100" Height="20" SelectedColorChanged="ColorPicker_SelectedColorChanged"/>
+                            <xctk:ColorPicker x:Name="colorPicker" Width="100" Height="20" SelectedColorChanged="ColorPicker_SelectedColorChanged" SelectedColor="Blue"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -70,7 +75,7 @@
         <InkCanvas Grid.Row="1" x:Name="inkCanvas" Background="White" EditingMode="Ink"
                    PreviewMouseUp="InkCanvas_PreviewMouseUp">
             <InkCanvas.DefaultDrawingAttributes>
-                <DrawingAttributes x:Name="inkAttributes" Color="Black" Width="4" Height="4" />
+                <DrawingAttributes x:Name="inkAttributes" Color="Blue" Width="4" Height="4" />
             </InkCanvas.DefaultDrawingAttributes>
         </InkCanvas>        
     </Grid>

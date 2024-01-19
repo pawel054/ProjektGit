@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Images\iconClear.png" />
     <None Remove="Images\iconColor.png" />
+    <None Remove="Images\iconErase.png" />
     <None Remove="Images\iconSave.png" />
     <None Remove="Images\iconSelect.png" />
     <None Remove="Images\iconWeigth.png" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <Resource Include="Images\iconClear.png" />
     <Resource Include="Images\iconColor.png" />
+    <Resource Include="Images\iconErase.png" />
     <Resource Include="Images\iconSave.png" />
     <Resource Include="Images\iconSelect.png" />
     <Resource Include="Images\iconWeigth.png" />
