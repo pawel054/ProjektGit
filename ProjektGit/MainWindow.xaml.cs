@@ -65,9 +65,9 @@ namespace ProjektGit
 
             if (eraseMode)
             {
-                inkCanvas.DefaultDrawingAttributes.Color = ((SolidColorBrush)inkCanvas.Background).Color;
-
+                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
                 eraseBtn.Background = new SolidColorBrush(Colors.Gray);
+
             }
             else
             {
@@ -84,7 +84,10 @@ namespace ProjektGit
             }
             else
             {
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                if (eraseMode == false)
+                {
+                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                }
             }
         }
 
